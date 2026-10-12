@@ -29,6 +29,7 @@ namespace Hotel_Management_System.Data.Entities
 
 
 
+        public int ReservaId { get; set; }
         public Reserva? Reserva { get; set; }
 
     }

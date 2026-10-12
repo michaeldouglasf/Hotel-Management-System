@@ -1,6 +1,12 @@
 
 using Hotel_Management_System.Data;
 
+using Hotel_Management_System.Data.Entities;
+
+using Hotel_Management_System.Helpers;
+
+using Microsoft.AspNetCore.Identity;
+
 using Microsoft.EntityFrameworkCore;
 
 
@@ -21,13 +27,13 @@ namespace Hotel_Management_System
 
 
 
-            // Add services to the container.
+            // MVC
 
             builder.Services.AddControllersWithViews();
 
 
 
-            // Entity Framework Core
+            // Entity Framework Core + SQL Server
 
             builder.Services.AddDbContext<DataContext>(options =>
 
@@ -37,9 +43,41 @@ namespace Hotel_Management_System
 
 
 
-            // Repositories
+            // ASP.NET Core Identity
+
+            builder.Services.AddIdentity<User, IdentityRole>(options =>
+
+            {
+
+                options.User.RequireUniqueEmail = true;
+
+                options.SignIn.RequireConfirmedEmail = false;
+
+
+
+                options.Password.RequiredLength = 6;
+
+                options.Password.RequireDigit = false;
+
+                options.Password.RequireUppercase = false;
+
+                options.Password.RequireLowercase = false;
+
+                options.Password.RequireNonAlphanumeric = false;
+
+            })
+
+            .AddEntityFrameworkStores<DataContext>()
+
+            .AddDefaultTokenProviders();
+
+
+
+            // Repositories and helpers
 
             builder.Services.AddScoped<IHospedeRepository, HospedeRepository>();
+
+            builder.Services.AddScoped<IUserHelper, UserHelper>();
 
 
 
@@ -47,7 +85,7 @@ namespace Hotel_Management_System
 
 
 
-            // Configure the HTTP request pipeline.
+            // HTTP request pipeline
 
             if (!app.Environment.IsDevelopment())
 
@@ -70,6 +108,10 @@ namespace Hotel_Management_System
             app.UseRouting();
 
 
+
+            // Authentication must come before authorization
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

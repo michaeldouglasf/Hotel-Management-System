@@ -33,17 +33,21 @@ namespace Hotel_Management_System.Data
                 .Property(q => q.PrecoPorNoite)
                 .HasColumnType("decimal(18,2)");
 
-            modelBuilder.Entity<Reserva>()
-                .Property(r => r.ValorTotal)
-                .HasColumnType("decimal(18,2)");
-
             modelBuilder.Entity<Estadia>()
-                .Property(e => e.ValorTotal)
-                .HasColumnType("decimal(18,2)");
+               .HasOne(e => e.Reserva)
+               .WithOne(r => r.Estadia)
+               .HasForeignKey<Estadia>(e => e.ReservaId)
+               .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Reserva>()
+                .HasOne(r => r.Fatura)
+                .WithOne(f => f.Reserva)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Pagamento>()
-                .Property(p => p.Valor)
-                .HasColumnType("decimal(18,2)");
+                .HasOne(p => p.Reserva)
+                .WithMany(r => r.Pagamentos)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Fatura>()
                 .Property(f => f.ValorTotal)
