@@ -1,3 +1,4 @@
+using Hotel_Management_System.Data.SeedWork;
 
 using Hotel_Management_System.Data;
 
@@ -19,7 +20,7 @@ namespace Hotel_Management_System
 
     {
 
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
 
         {
 
@@ -124,6 +125,12 @@ namespace Hotel_Management_System
                 pattern: "{controller=Home}/{action=Index}/{id?}");
 
 
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var seedDb = ActivatorUtilities.CreateInstance<SeedDb>(scope.ServiceProvider);
+                await seedDb.SeedAsync();
+            }
 
             app.Run();
 
